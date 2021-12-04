@@ -18,20 +18,20 @@
 
 ## 作成する API 一覧
 
-- 各 Tutotial には、ID、タイトル、説明、公開ステータスがある
-- API を使うことで、チュートリアルの作成、取得、更新、削除ができる
+- 各 Event には、ID、タイトル、説明、公開ステータスがある
+- API を使うことで、イベントの作成、取得、更新、削除ができる
 - API は公開ステータスやタイトルによる検索などのカスタム検索メソッドもサポートしている
   
-| メソッド | URL                            | 行動                                                      |
-| :------- | :----------------------------- | :-------------------------------------------------------- |
-| POST     | /api/tutorials                 | 新しいチュートリアルを作成する                            |
-| GET      | /api/tutorials                 | すべてのチュートリアルを取得する                          |
-| GET      | /api/tutorials/:id             | :id のチュートリアルを取得する                            |
-| PUT      | /api/tutorials/:id             | :id のチュートリアルを更新する                            |
-| DELETE   | /api/tutorials/:id             | :id のチュートリアルを削除する                            |
-| DELETE   | /api/tutorials                 | すべてのチュートリアルを削除する                          |
-| GET      | /api/tutorials/publish         | 公開されているすべてのチュートリアルを検索                |
-| GET      | /api/tutorials?title=[keyword] | タイトルに含まれるすべてのチュートリアルを keyword で検索 |
+| メソッド | URL                         | 行動                                                |
+| :------- | :-------------------------- | :-------------------------------------------------- |
+| POST     | /api/events                 | 新しいイベントを作成する                            |
+| GET      | /api/events                 | すべてのイベントを取得する                          |
+| GET      | /api/events/:id             | :id のイベントを取得する                            |
+| PUT      | /api/events/:id             | :id のイベントを更新する                            |
+| DELETE   | /api/events/:id             | :id のイベントを削除する                            |
+| DELETE   | /api/events                 | すべてのイベントを削除する                          |
+| GET      | /api/events/publish         | 公開されているすべてのイベントを検索                |
+| GET      | /api/events?title=[keyword] | タイトルに含まれるすべてのイベントを keyword で検索 |
 
 Hibernate と Spring Data JPA の JpaRepository を使って、CRUD 操作や検索メソッドを作る。
 
@@ -54,20 +54,20 @@ apt-get install tree
         │           └── demo
         │               ├── SpringBootOracleApplication.java
         │               ├── controller
-        │               │   └── TutorialController.java
+        │               │   └── EventController.java
         │               ├── model
-        │               │   └── Tutorial.java
+        │               │   └── Event.java
         │               └── repository
-        │                   └── TutorialRepository.java
+        │                   └── EventRepository.java
         └── resources
             └── application.properties
 ```
 
 簡単に説明する。
 
-- Tutorial data model クラスは、Tutorial エンティティと Tutorial テーブルに対応している
-- TutorialRepository は JpaRepository を拡張したインターフェースで、CRUD メソッドとカスタム検索メソッドに対応している。これは TutorialController で Autowired される。
-- TutorialController は RESTful なリクエストに対応する RestController で、getAllTutorials, createTutorial, updateTutorial, deleteTutorial, findByPublished... などのリクエストマッピングメソッドを持つ
+- Event data model Event エンティティと Event テーブルに対応している
+- EventRepository は JpaRepository を拡張したインターフェースで、CRUD メソッドとカスタム検索メソッドに対応している。これは EventController で Autowired される。
+- EventController は RESTful なリクエストに対応する RestController で、getAllEvents, createEvent, updateEvent, deleteEvent, findByPublished... などのリクエストマッピングメソッドを持つ
 - application.properties には、Spring Datasource、JPA、Hibernate の設定がある
 - build.gradle には、Spring Boot と Oracle の依存関係が含まれている。
 
@@ -140,7 +140,7 @@ spring.jpa.hibernate.ddl-auto は、データベースの初期化に使用さ�
 データモデルは Event で、id，title，description，published の4つのフィールドを持っている。
 model パッケージで Event クラスを定義する。
 
-`model/Tutorial.java`
+`model/Event.java`
 ``` java
 package com.example.demo.model;
 
@@ -248,7 +248,7 @@ save()、findOne()、findById()、findAll()、count()、delete()、deleteById().
 
 ## Spring Rest APIs Controller を作成
 
-最後に、Tutorial の作成、取得、更新、削除、検索のための API を提供するコントローラを作成する。
+最後に、Event の作成、取得、更新、削除、検索のための API を提供するコントローラを作成する。
 
 `controller/EventController.java`
 ``` java
@@ -307,10 +307,10 @@ public class EventController {
 
     @GetMapping("/events/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable("id") long id) {
-        Optional<Event> tutorialData = eventRepository.findById(id);
+        Optional<Event> eventData = eventRepository.findById(id);
 
-        if (tutorialData.isPresent()) {
-            return new ResponseEntity<>(tutorialData.get(), HttpStatus.OK);
+        if (eventData.isPresent()) {
+            return new ResponseEntity<>(eventData.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -329,14 +329,14 @@ public class EventController {
 
     @PutMapping("/events/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable("id") long id,
-            @RequestBody Event tutorial) {
+            @RequestBody Event event) {
         Optional<Event> eventData = eventRepository.findById(id);
 
         if (eventData.isPresent()) {
             Event _event = eventData.get();
-            _event.setTitle(tutorial.getTitle());
-            _event.setDescription(tutorial.getDescription());
-            _event.setPublished(tutorial.isPublished());
+            _event.setTitle(event.getTitle());
+            _event.setDescription(event.getDescription());
+            _event.setPublished(event.isPublished());
             return new ResponseEntity<>(eventRepository.save(_event),
                     HttpStatus.OK);
         } else {

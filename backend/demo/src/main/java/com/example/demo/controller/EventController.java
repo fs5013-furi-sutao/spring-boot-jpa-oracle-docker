@@ -53,10 +53,10 @@ public class EventController {
 
     @GetMapping("/events/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable("id") long id) {
-        Optional<Event> tutorialData = eventRepository.findById(id);
+        Optional<Event> eventData = eventRepository.findById(id);
 
-        if (tutorialData.isPresent()) {
-            return new ResponseEntity<>(tutorialData.get(), HttpStatus.OK);
+        if (eventData.isPresent()) {
+            return new ResponseEntity<>(eventData.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -75,14 +75,14 @@ public class EventController {
 
     @PutMapping("/events/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable("id") long id,
-            @RequestBody Event tutorial) {
+            @RequestBody Event event) {
         Optional<Event> eventData = eventRepository.findById(id);
 
         if (eventData.isPresent()) {
             Event _event = eventData.get();
-            _event.setTitle(tutorial.getTitle());
-            _event.setDescription(tutorial.getDescription());
-            _event.setPublished(tutorial.isPublished());
+            _event.setTitle(event.getTitle());
+            _event.setDescription(event.getDescription());
+            _event.setPublished(event.isPublished());
             return new ResponseEntity<>(eventRepository.save(_event),
                     HttpStatus.OK);
         } else {
