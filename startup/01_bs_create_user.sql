@@ -6,7 +6,7 @@ ALTER SESSION SET CONTAINER = ORCLPDB1;
 --------------------------------------------------------------------
 
 -- create new user
-CREATE USER BOOK_SHOP IDENTIFIED BY oracle;
+CREATE USER BOOK_SHOP IDENTIFIED BY booker;
 
 -- grant priviledges
 GRANT CONNECT, RESOURCE TO BOOK_SHOP;

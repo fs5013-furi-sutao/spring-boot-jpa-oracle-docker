@@ -405,7 +405,6 @@ Talend API Tester - Free Edition
 `http://localhost:8080/api/events`
 ``` json
 {
-  "id": 6,
   "title": "Create API Tut#6",
   "description": "Tut#6 Description"
 }
